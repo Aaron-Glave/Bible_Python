@@ -7,3 +7,5 @@ It lets you pick between 1 of 2 random distributions:
 2. Treat the bible as 1 huge book, and pick a random chapter of any book in the Bible.
    * Doing this, Psalms is the most likely Bible book to be selected.
    * That's because Psalms is the longest book in the Bible and has the most chapters.
+
+I compiled this using the -F flag of `pyinstaller`.
