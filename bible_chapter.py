@@ -68,48 +68,61 @@ biblebooks =[
     ("Revelation", 22),
 ]
 
-def select_random_style() -> bool:
-    """If this function returns True, pick a random book first, then pick a random chapter in that book.
-    If not, select a random chapter with each one having an equal chance,"""
-    print("Select whether you want to pick a random book, then a random chapter in that book,",
-          "or treat the Bible as one huge book of words from God",
-          "1: Pick a random book, then a random chapter in that book",
-          "2: Treat the Bible as one huge book", sep="\n")
-    how_to_type = "Press 1 or 2, then hit enter or return."
+def select_reading_style() -> int:
+    """If this function returns 1, pick a random book first, then pick a random chapter in that book.
+    If it returns 2, select a random Psalm.
+    If it returns 3,select a random chapter with each one having an equal chance."""
+    print("Select what chapter recommendation looks best right now:",
+          "1: Pick a random book, then a random chapter in that book.",
+          "2. Pick a random Psalm to contemplate.",
+          "3: Treat the Bible as one huge book.", sep="\n")
+    how_to_type = "Press 1,2, or 3. then hit enter or return."
     choice = 0
-    while choice not in (1, 2):
+    options = tuple(range(1, 3+1))
+    while choice not in options:
         try:
             choice = int(input())
         except ValueError:
             choice = 0
-        if choice not in (1, 2):
+        if choice not in options:
             print(how_to_type)
-    return choice == 1
+    return choice
+
+def print_chapter_recommendation(
+        book_title: str,
+        chapter_to_read: int,
+        capitalize_read: bool = True,
+) -> None:
+    r = "R" if capitalize_read else "r"
+    print(r+"ead chapter", chapter_to_read, "of book", book_title, end=".\n")
+
+def select_chapter(book_to_read: tuple[str, int]) -> None:
+    chapter_to_read = randint(1, book_to_read[1])
+    print_chapter_recommendation(book_to_read[0], chapter_to_read)
 
 if __name__ == "__main__":
-    sofar = {}
-    for book in biblebooks:
-        assert book[0] not in sofar
-        sofar[book[0]] = "pass"
     assert len(biblebooks) == 66
     print("There are", len(biblebooks), "books in the Bible.")
-    random_book = select_random_style()
-    if random_book:
-        book_to_read = biblebooks[randint(0, 65)]
-        chapter_to_read = randint(1, book_to_read[1])
-        print("Read chapter", chapter_to_read, "of book", book_to_read[0], end=".\n")
-    else:
+    my_choice = select_reading_style()
+    if my_choice == 1:
+        select_chapter(biblebooks[randint(0, 65)])
+    elif my_choice == 2:
+        psalm = biblebooks[18]
+        print("Remember, all Psalms are songs!")
+        select_chapter(psalm)
+    elif my_choice ==3:
         bible_chapters = []
         for book in biblebooks:
             chapter_to_add = 1
             while chapter_to_add <= book[1]:
                 bible_chapters.append((book[0], chapter_to_add))
                 chapter_to_add += 1
-        #print(bible_chapters[-1])
         numchapters = len(bible_chapters)
-        print("Out of the", numchapters, "chapters of the Bible, I want you to read", end=" ")
+        print("Out of the", numchapters, "chapters of the Bible, I want you to", end=" ")
         chapter_index = randint(0, numchapters - 1)
-        book_to_read = bible_chapters[chapter_index]
-        chapter_to_read = bible_chapters[chapter_index][1]
-        print("chapter", chapter_to_read, "of the book", book_to_read[0], end=".\n")
+        print_chapter_recommendation(
+            book_title=bible_chapters[chapter_index][0],
+            chapter_to_read=bible_chapters[chapter_index][1],
+            capitalize_read=False,
+        )
     input("Press Enter/newline when you're done.\n")
